@@ -18,7 +18,7 @@
 
 类与类的关系Association between Classes
 ---------------------------------
-耦合Class coupling
+类的耦合Class coupling
 
 继承Inheritance
 
