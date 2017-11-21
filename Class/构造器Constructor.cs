@@ -58,9 +58,53 @@ Console.WriteLine();
 
 //Q: 为什么要有静态类和静态成员？
 //A: 在实际情况中，有时候要创造一些不操作实例数据且不与程序中的其他对象关联的方法，这些方法就可以就声明为静态方法，用静态类来封装这些静态方法就能直接
-  //调用，从而避免创造一些不必要的实例，优化整个程序。创造静态成员因为要彰显成员的独特性(singleton)，意思为在内存中有且仅有一个该类/成员的实例，既然
-  //已经被实例了，那么就可以直接访问。反之，如果一个非静态的类包含静态成员，那么该类的实例将不能访问这些静态方法，但是还是可以直接通过这个非静态类来访问
-  //其中的静态成员的。需注意，静态类的方法不能访问实例的方法和变量，但是反过来是可以的。
+  //调用，从而避免创造一些不必要的实例，优化整个程序。如一个人类：
+
+public class Person
+{
+  public string Name;
+  
+  public Person Parse(string str)   //改为静态方法
+  {
+    var person = new Person();
+    person.Name = str;
+    return person;
+  }
+}
+
+//当我们需要调用Person类中的Parse方法来给Name赋值时，就需要首先创造一个实例，通过这个实例调用Parse方法。但是，Parse方法不是void方法，是一个返回为
+  //一个Person实例的方法，所以我们需要重新声明一个p来保存这个实例。我们就有两个一样的Person类实例，这太傻逼了，如下：
+
+static void Main(string[] args)
+{
+  var person = new Person();    //Person实例1
+  var p = person.Parse("sdw");    //Person实例2
+}
+
+//有很多方法来改善这种情况，其中对其他代码影响最小的改法为将Parse改为静态方法，如：
+
+public class Person
+{
+  public string Name;
+  
+  public static Person Parse(string str)
+  {
+    var person = new Person();
+    person.Name = str;
+    return person;
+  }
+}
+  
+//这样就能避免得首先实例化Person类才能调用Parse方法，改为直接调用，如下：
+
+static void Main(string[] args)
+{
+  var person = Person.Name("sdw");
+}
+
+//创造静态成员因为要彰显成员的独特性(singleton)，意思为在内存中有且仅有一个该类/成员的实例，既然已经被实例了，那么就可以直接访问。反之，
+  //如果一个非静态的类包含静态成员，那么该类的实例将不能访问这些静态方法，但是还是可以直接通过这个非静态类来访问//其中的静态成员的。
+  //需注意，静态类的方法不能访问实例的方法和变量，但是反过来是可以的。
 
 
 
