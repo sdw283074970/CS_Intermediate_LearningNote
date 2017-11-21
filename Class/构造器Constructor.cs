@@ -68,3 +68,5 @@ static void Main(string[] args)
   Console.WriteLine("{0}, {1}", example1.Number1, example1.Number2);
   Console.WriteLine("{0}, {1}", example2.Number1, example2.Number2);
 }
+
+//一个快速写构造函数的方法为，在Visual Studio中，输入ctor加两下TAB键自动构造该类的构造器。
