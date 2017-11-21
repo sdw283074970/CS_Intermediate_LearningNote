@@ -64,7 +64,7 @@ public class Person
 {
   public string Name;
   
-  public Person Parse(string str)   //改为静态方法
+  public Person Parse(string str)   //返回类型为一个实例
   {
     var person = new Person();
     person.Name = str;
@@ -87,7 +87,7 @@ public class Person
 {
   public string Name;
   
-  public static Person Parse(string str)
+  public static Person Parse(string str)  //将这个方法改为静态方法
   {
     var person = new Person();
     person.Name = str;
