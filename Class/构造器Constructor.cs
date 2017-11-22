@@ -70,3 +70,95 @@ static void Main(string[] args)
 }
 
 //一个快速写构造函数的方法为，在Visual Studio中，输入ctor加两下TAB键自动构造该类的构造器。
+
+//Q: 什么情况下我们需要用构造器初始化字段/属性/变量？
+//A: 一个类可能有非常多的字段/属性/变量，并不一定是所有的都需要初始化。只有对于这个类的实例非常重要的字段、必须通过外部参数传递赋值的字段才需要放在
+  //构造器初始化。比如一个类中的一个字段在初始化之前就已经确定它一定是某个值，我们就没有必要放在构造器里初始化，直接在声明的时候就赋值了。
+
+//Q: 什么情况下必须初始化字段？
+//A: 简而言之，任何类中的需要访问到的实例都应该在构造阶段就初始化，即在构造其中声明实例，否则直接访问可能会造成程序崩溃。如以下例子：
+
+public class Example
+{
+  public List<NewExample> newExampleList;  //设NewExample为一个自定义类，newExample为包含一系列NewExample的列表
+}
+
+static void Main(string[] args)
+{
+  var example = new Example();
+  var newExample = new NewExample();
+  example.newExampleList.Add(newExample);   //程序会在此处崩溃
+}
+
+//以上程序会崩溃，因为在Example类的实例example中，newExampleList并没有被实例化。解决的办法除了在声明newExampleList的时候将其实例化以外，
+  //也可以用构造器将其实例化。具体用哪个看个人喜好，但注意一定要统一标准。代码如下：
+
+public class Example
+{
+  //public List<NewExample> newExampleLis = new List<NewExample>()t;    //在构造器初始化或这在里初始化(实例化)
+  public List<NewExample> newExampleList;
+  
+  public Example()
+  {
+    newExampleList = new List<NewExample>();
+  }
+}
+
+//Q: 当类中有多个构造函数，是否每个继承函数都需要初始化它们需要的字段？不同的构造函数之间相同的字段初始化方法相同会产生冲突吗？
+//A: 不会冲突，系统在类实例化的时候匹配其构造器结构，找出对应的方法执行，必须有所有的必要字段初始化方法。但是这些构造函数中的方法有包含关系，
+  //及构造器B中的部分方法是A中的全部方法，构造器C中的方法是B中全部方法等，我们可以用类似于继承的写法继承前构造其中的方法，免去重复步骤。如以下代码：
+
+Public class Example
+{
+  public int Number1;
+  public int Number2;
+  public List<NewExample> newExampleList;
+  
+  public Example()  //声明默认构造器
+  {
+    newExampleList = new List<NewExample>();
+  }
+  
+    public Example(int n) //声明第二种构造器
+  {
+    newExampleList = new List<NewExample>();  //包含第一种构造器方法
+    Number1 = n * 2;
+  }
+  
+    public Example(int n, int m)  //声明第三种构造器
+  {
+    newExampleList = new List<NewExample>();  //包含第一种构造器方法
+    Number1 = n * 2;  //包含第二种构造器方法
+    Number2 = m * 2;
+  }
+}
+
+//在以上这种情况下，我们可以改写为：
+
+Public class Example
+{
+  public int Number1;
+  public int Number2;
+  public List<NewExample> newExampleList;
+  
+  public Example()  //声明默认构造器
+  {
+    newExampleList = new List<NewExample>();
+  }
+  
+    public Example(int n) //声明第二种构造器
+      : this()  //继承第一种无参数构造器方法
+  {
+    Number1 = n * 2;
+  }
+  
+    public Example(int n, int m)  //声明第三种构造器
+      : this(n) //继承第二种有一个参数的构造器方法，自然也包括了五三出构造器方法
+  {
+    Number2 = m * 2;
+  }
+}
+
+//但是注意，并不推荐这种连环继承，容易出漏子，牵一发则动全身。最多考虑继承默认的无参数构造器就好了。
+
+//暂时想到这么多，最后更新2017/11/21
