@@ -99,7 +99,7 @@ public class Person
 
 static void Main(string[] args)
 {
-  var person = Person.Name("sdw");
+  var person = Person.Parse("sdw");
 }
 
 //创造静态成员因为要彰显成员的独特性(singleton)，意思为在内存中有且仅有一个该类/成员的实例，既然已经被实例了，那么就可以直接访问。反之，
