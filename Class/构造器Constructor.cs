@@ -161,4 +161,20 @@ Public class Example
 
 //但是注意，并不推荐这种连环继承，容易出漏子，牵一发则动全身。最多考虑继承默认的无参数构造器就好了。
 
+//Q: 如果一个类中有很多仅被声明但没有初始化的字段，且都依赖外部参数传递进去才能初始化，那我是不是必须考虑每一种组合形式把构造器都列举出来？
+//A: 针对这种情况，我们可以使用对象初始器语法(Object Initializers Syntax)。如一个Example类有很多字段，实例化的时候只用以下代码：
+
+public void Mian(string[] args)
+{
+  var example = new Example
+                  {
+                    Number1 = 1,
+                    Number3 = 2,
+                    Number5 = 3,
+                    ewExampleList = new List<NewExample>();
+                  };
+}
+
+//以上代码表示，实例化Example类之前，先调用默认或无参数传递的构造器，然后给各列出字段赋值并初始化。注意不再有括号()，而大括号{}就是对象初始器。
+
 //暂时想到这么多，最后更新2017/11/21
