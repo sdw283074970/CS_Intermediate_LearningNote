@@ -44,9 +44,18 @@ Public class Person
 }
 
 //当C#编译器看到这里，就会自动的创建一个私有的字段，字段名称与属性名称一样，只是将第一个字母变小写并加了下划线前缀。
-//另外
+//当然，get和set后面的代码块是可以包含逻辑的。如果只想要getter或只想要setter，完全可以将另外一个省略不写。同样，属性中的getter和setter也可以
+  //被访问修饰符修饰，如：
 
+Public class Person
+{
+  public string Name { get; private set; }    //默认public，如果加上private访问修饰符，那么其他类将不能调用getter
+}
 
+//如果setter为私有类型修饰符，那要如何初始化？答案是在构造器初始化就行了，这样初始化的字段将不能被改变，只能访问调用/引用。
 
+//Tips：快速打出自动属性：在VS中输入prop，然后TAB即可。
+
+//暂时想到这么多，最后更新2017/11/27
 
 
