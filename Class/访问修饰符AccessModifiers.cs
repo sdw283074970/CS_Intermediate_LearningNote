@@ -49,17 +49,17 @@ static void Mian(string[] args)
   
 public class Person
 {
-  private string Name;    //私有封装字段Name，我们不想让其他类随意访问/更改这个值
+  private string _name;    //私有封装字段_name，我们不想让其他类随意访问/更改这个值。注意所有私有类型的字段都应使用下划线前缀加camalCase
   
   public void SetName(string name)    //设置一个public的赋值方法，用来在特别的情况更改Name的值，即setter
   {
     if (!String.IsNullOrEmpty(name))    //传入参数必须不为空才能成功设置
-      this.Name = name;
+      this._name = name;
   }
   
   public string GetName()   //设置一个pubic的方法获得Name的值，即getter
   {
-    return Name;
+    return _name;
   }
 }
   
@@ -67,8 +67,8 @@ static Void Main(string[] args)
 {
   var person = new Person();
   
-  var n = person.Name;    //编译器报错，Name为被封装字段
-  person.Name = "sdw";    //编译器同样报错
+  var n = person._name;    //编译器报错，Name为被封装字段
+  person._name = "sdw";    //编译器同样报错
   
   var n = person.GetName;   //通过使用getter方法来获取被封装的字段值
   person.SetName("sdw");    //通过使用setter方法来赋值
