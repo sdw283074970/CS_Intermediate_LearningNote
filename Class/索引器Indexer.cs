@@ -3,9 +3,9 @@
   //都是早据定义在List、int[]等类中的索引器。索引器建立了一个key-value一对一映像的关系，如list[0]只会返回第一个元素等。
   
 //Q: 为什么要用索引器？
-//A: 索引器能更加方便快捷的查找到我们需要的值。如果不用索引器，就只能用类中的方法来达到同样的效果。如一些类中包含了集合的语义，如HTTP cookie，这是一种
+//A: 索引器能更加方便快捷的查找到我们需要的值。如果不用索引器，就只能用类中的方法来达到同样的效果。一些类中包含了集合的语义，如HTTP cookie，这是一种
   //在用户端和web服务器中传输的文件，每一次对web服务器的请求都会传输一次，用来分辨不同的用户，我们可以在cookie中储存一些用户的资料、设置，在这样的
-  //cookie中我们就有一个名称和值的列表。如果我们要实现一个HTTP cookie的概念，那么代码如以下所示：
+  //cookie中我们就有一个名称和值字典(Dictionary)，这就是集合语义。我们可以通过索引器来搜索其中的键-值对应关系，代码如以下所示：
   
   var cookie = new HttpCookie();    //实例化一个HttpCookie类
   cookie.Expire = DateTime.Today.AddDays(5);    //设置一个过期时间
@@ -47,12 +47,33 @@ public class List
   }
 }
 
+//Q: 既然字典、列表是集合语义，它们都自带了索引器，为什么我们还要自己声明索引器？
+//A: 还是为了方便。如果不自己声明索引器，那么就需要通过这个类的实例调用字典、列表的索引器，通常情况下实现都极其麻烦，因为字段都是私有无法直接访问，
+  //还需要写两个方法GetItem和SetItem来获得/设置值，多此一举。举一个完整的Http Cookoie索引器例子：
 
+public class HttpCookie
+{
+  private readonly Dictionary<string, string> _dictionary;  //作为一个正常字段，按照OOP原则，设为私有，字典类一般设为只读类型。
+  
+  public HttpCookie()
+  {
+    _dictionary = new Dictionary<string, string>();   //在构造器中实例化+初始化字典
+  }
+  
+  public string this[string key]    //声明一个类中的索引器，有了这个索引器就能直接在类的实例后面加[]索引
+  {
+    get { return _dictionary[key];}   //取得值的逻辑
+    set { _dictionary[key] = value;}    //设置值的逻辑
+  }
+}//手工的HttpCookie类
 
+static void Main(string[] args)
+{
+  var cookie = new HttpCookie();    //实例化一个HttpCookie
+  cookie["name"] = "sdw";   //直接使用索引器建立一个键值对应关系
+  var name = cookie["name"];    //直接使用索引器获取对应键的值
+}
 
+//以上简明易懂如何声明、为何要在类中声明索引器。
 
-
-
-
-
-
+//暂时想到这么多，最后更新2017/11/28
