@@ -41,9 +41,27 @@ static void Main(string[] args)
   object obj = number;    //装箱操作
   object objNum = 10;   //或者这样也是装箱
 
-//
+//在这里需要知道装箱是一个功耗十分大的操作，应该避免
+
+//Q: 什么是拆箱的本质？
+//A: 拆箱即是装箱反过来，将在堆中打包成对象的值类型值转换成本来的样子。以下代码就能说明：
+
+  object obj = 10;
+  int number = (int)obj;    //通过强制转换类型拆箱
   
+//Q: 实际情况中哪些时候会用到装箱和拆箱？
+//A: 最熟悉的莫过于ArrayList()类。这个类将其所有成员都打包装箱以Object的形式储存在堆中，换句话说，无论什么类型的值，都可以混杂装在同一个ArrayList中。
+  //如以下代码：
   
+static void Main(string[] args)
+{
+  var list = new ArrayList();
+  list.Add(1);
+  list.Add("sdw");
+  list.Add(DateTime.Today);
+}
   
-  
+//同样，要取出这种ArrayList中的值需要对应拆箱，不再赘述。为了节省资源避免装箱拆箱，可以不用ArrayList改用C#最强大的泛型，如List<T>等等。
+
+//暂时想到这么多，最后更新2017/11/30
   
