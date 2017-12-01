@@ -44,10 +44,55 @@ static void Main(string[] args)
   rectangle.Draw();
 }//可以看到两个实例都调用的都是继承自基类的方法，但是复写过。同名，但执行结果不一样，会分别输出一个圆和矩形。
 
+//Q: 为什么一定要复写？为什么不能直接分别声明一个DrawCircle和DrawRectangle的方法？
+//A: 以上仅仅介绍了复写的概念，复写与重新声明方法的最大不同在于其方法名不用改变，这意味着我们可以节省很多代码，还能提升可维护性。
+  //节省代码和提升维护性可在以下体现，如果分别声明方法，代码如下：
 
+static void Main(string[] args)
+{
+  var list = new List<Shape>();   //声明一个只装Shape类成员的列表
+  var circle = new Circle();    //实例化一个Circle类，假设这里没有用复写，而是声明了一个DrawCircle()的新方法
+  var rectangle = new Rectangle();    //实例化一个Rectangle类，假设这里没有用复写，而是声明了一个DrawRectangle()的新方法
+  
+  list.Add(circle);   //在列表中添加circle，因为Circle起源自Shape，这里自动上转型
+  list.Add(rectangle);    //同上
+  
+  //由于Draw方法名字不同，我们没法通过遍历列表的代码来统一调用Draw()方法。为了实现遍历调用，我们必须建立一个枚举(enum)来标记每一种图形类的类别，
+  //再通过switch语句实现遍历调用，这里枚举类型的代码省略
+  
+  foreach (var shape in list)
+  {
+    switch (shape.Type)   //shape.Type为枚举属性，设枚举列表名称为ShapeTyple
+    {
+      case ShapeTyple.Circle    //当列表中的枚举类型等于圆的时候
+        DrawCircle();   //执行画圆的方法
+        break;    //终止此次循环
+      case ShapeType.Rectangle    //当列表中的枚举类型等于矩形的时候
+        DrawCirlce();   //执行画矩形的方法
+        break;    //终止此次循环
+    }
+  }
+}
 
+//可以看出，画一个列表的图非常复杂。如果我们要添加一个三角形类，坚持不用复写，要更改的地方就多了。首先，得在枚举类型列表中加一个三角形类，方便在switch
+  //语句中使用；然后还要更改switch语句等等，可维护性极低。如果用了复写，那么代码可简化为以下：
 
+static void Main(string[] args)
+{
+  var list = new List<Shape>();
+  var circle = new Circle();    //实例化一个Circle类，这里复写了Draw()方法
+  var rectangle = new Rectangle();    //实例化一个Rectangle类，这里复写了Draw()方法
+  
+  list.Add(circle);   //添加Circle实例并自动上转型
+  list.Add(rectangle);    //同上
 
+  foreach (var shape in list)
+  {
+    Draw();   //由于Draw方法名字相同，我们遍历的时候就不用switch语句，直接调用Draw()方法
+  }
+}
+
+//可以看到与旧版本相比，明显提升了使用效率，节省了大量代码。同时，如果有新类的加入，通过复写，除了向列表添加成员的操作，再无其他，体现了搞维护性。
 
 
 
