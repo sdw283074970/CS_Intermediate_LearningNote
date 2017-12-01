@@ -64,4 +64,4 @@ static void Main(string[] args)
 //同样，要取出这种ArrayList中的值需要对应拆箱，不再赘述。为了节省资源避免装箱拆箱，可以不用ArrayList改用C#最强大的泛型，如List<T>等等。
 
 //暂时想到这么多，最后更新2017/11/30
-  
+ 
