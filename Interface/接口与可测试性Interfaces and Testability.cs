@@ -27,7 +27,7 @@ public class Order
   public bool IsShipped 
   {
     get { return Shipment != null; }  //如果Shipment为空，则返回False，说明订单没有发货
-    set { _IsShipped = Value; }
+    set { _isShipped = Value; }
   }
 }
   
@@ -38,7 +38,7 @@ public class ShippingCalculator
   public int CalculateShipping(Order order)
   {
     if (order.TotalPrice > 30)
-      return order.TotalPrice * 0.1
+      return order.TotalPrice * 0.1;
     else
       return 0;
   }
