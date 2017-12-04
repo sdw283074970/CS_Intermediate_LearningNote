@@ -187,6 +187,7 @@ namespace Name.UnitTests
         Shipment = new Shipment()   //将订单中的Shipment属性指向一个空的Shipment实例，Shipment字段本身就不为空，这样IsShipped就为真
       };
       orderProcessor.Process(order);  //这一步操作后我们希望抛出异常。
+      //这里的断言测试为检验结果是否为抛出一个类型为InvalidOperationExcaption的异常。返回在这个方法前贴上一个ExpectedException特性即可
     }
   }
   
