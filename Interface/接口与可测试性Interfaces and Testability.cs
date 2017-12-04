@@ -21,9 +21,14 @@ public class Shipment
 
 public class Order
 {
+  private bool _isShipped;
   public int TotalPrice { get; set; }
-  public bool IsShipped { get; set; }
   public Shipment Shipment { get; set; }
+  public bool IsShipped 
+  {
+    get { return Shipment != null; }  //如果Shipment为空，则返回False，说明订单没有发货
+    set { _IsShipped = Value; }
+  }
 }
   
   //接下来是ShippingCalculator类，这个类主要包括了一个方法，用来根据订单价格计算运费
@@ -75,7 +80,7 @@ static void Main(string[] args)
   //以上为我们的主程序代码。接下来新建一个测试程序，在VS中右键项目解决方案，添加一个Unit Test Project，命名为Name.UnitTests，将会生成以下框架：
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTestin;  //VS自带的测试工具命名空间
+using Microsoft.VisualStudio.TestTools.UnitTesting;  //VS自带的测试工具命名空间
 
 namespace Name.UnitTests  //单元测试命名空间
 {
@@ -158,12 +163,69 @@ static void Main(string[] args)
   orderProcessor.Process(order);    //处理订单
 }
 
+  //在用接口替换掉OrderProcessor类中的其他类后，我们可以开始写测试程序来测试这个类。首先第一个要测试的是Process方法中的第一种情况，即当订单已发货
+  //时，应该抛出一个异常。回到UnitTest1单元测试脚本，首先要更改脚本中测试类和方法的名字。测试类的名字构成为“受测类+Tests”，测试方法的名字构成为
+  //“受测方法名_条件_预计结果”。在这里测试类和测试方法名字分别为OrderProcessorTests和Process_OrderIsShipped_ThrowAnException。整个测试代码如下：
 
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Testability;    //必须加载OrderProcessor类的命名空间才能访问OrderProcessor和其他类
 
+namespace Name.UnitTests 
+{
+  [TestClass]
+  public class OrderProcessorTests    //更改后的测试类名，可以清楚知道测试的是OrderProcessor类
+  {
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]  //这个特性指出运行期望，具体为抛出一个异常类型为InvalidOperationException的异常
+    public void Process_OrderIsShipped_ThrowAnException()   //更改后的测试方法名，可以清楚的看出受测方法、条件和期望
+    {   
+      //声明受测类实例，参数要求传入有IShipingCalculator接口的实例，我们传入临时的替代品
+      var orderProcessor = new OrderProcessor(new FakeShippingCalculator);  
+      var order = new Order
+      {
+        Shipment = new Shipment()   //将订单中的Shipment属性指向一个空的Shipment实例，Shipment字段本身就不为空，这样IsShipped就为真
+      };
+      orderProcessor.Process(order);  //这一步操作后我们希望抛出异常。
+    }
+  }
+  
+  pubic calss FakeShippingCalculator : IShippingCalculator  //声明ShippingCalculator的替代品，也拥有IShippingCalculator接口
+  {
+    public int CalculateShipping(Order order)   //VS会自动上接口中声明的方法
+    {
+      return 1;   //假设该类中的方法工作正确，直接返回一个正确的值用于测试
+    }
+  }
+}
+  
+  //无论用哪一种单元测试环境，其核心都是一样的。步骤为：
+  //1. 使用接口隔离受测类；
+  //2. 安排前置条件；
+  //3. 执行测试方法；
+  //4. 做断言测试。
 
+  //现在来执行这个测试类。在VS中点击TEST-> All test。然后可以看到所有测试通过。
+  //接下来测试OrderProcessor类的第二种情况，即订单没有发货。我们希望order.Shipment能够正确的初始化。我们在测试类中添加一个新的测试方法，代码如下：
+  
+  [TestMethod]    //同样需要TestMethod特性修饰，标明这是一个测试方法
+  public void Process_OrderIsNotShipped_SetShipmentPropertyOfTheOrder()   //在订单没有发货的情况下，希望Process方法正确初始化Shipment属性
+  {
+    var orderProcessor = new OrderProcessor(new FakeShippingCalculator);    
+    var order = new Order();    //这里Shipment为空，则IsShipped为假，即设定前置条件为没有发货
+    
+    orderProcessor.Process(order);    //执行测试方法 
+    
+    //我们需要断言order中的Shipment属性是否被正确设置。做断言测试需要调用Assert类，在Microsoft.VisualStudio.TestTools.UnitTesting命名空间下
+    //在此例中我们需要断言三个对象是否正确，即执行Process方法后IsShipped是否为真、Cost是否被正确计算、发货日是否为操作后的第二天
+    Assert.IsTrue(order.IsShipped);   //首先我们要确定IsShipped是否为真
+    Assert.AreEqual(1, order.Shipment.Cost);  //然后测试cost是否等于1，AreEqual()方法中第一个参数为理论值，第二个参数为实际值，即检验对象
+    Assert.AreEqual(DayTime.Today.AddDays(1), order.Shipment.ShippingDate); //检验最后一个指标ShippingDate是否为第二天
+  }//接着点击TEST->All test来测试。测试通过，代码没问题。
 
+  //以上为接口在单元测试的应用。
 
+//Q: 接口结构很简单，有没有快速方法声明一个类的接口？
+//A: 可以使用VS自带的接口抽取功能抽取接口。方法为邮件类->reactor->抽取->Interface。然后就有一个对话框，依照情况勾选抽取。
 
-
-
-
+//暂时想到这么多，最后更新2017/12/4
