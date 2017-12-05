@@ -16,7 +16,7 @@ public class Gun : IRangeWeapon, IMordenWeapon    //这不是多重继承，只�
 //Q: 如果我声明一个衍生类有多个接口怎么办？
 //A: 接口、基类写在一起即可。没有试过先后顺序有什么差别，但是正常一半都先写基类，再列出接口，以下写法正确：
 
-public class Gun : Weapon, IRangeWeapon, IMordenWeapon    //基类、多个接口混写没关系
+public class Gun : Weapon, IRangeWeapon, IMordenWeapon    //这也不是多重继承基类、多个接口混写没关系
 {
 
 }
