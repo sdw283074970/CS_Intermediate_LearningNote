@@ -33,19 +33,6 @@ public class ConsoleLogger : ILogger
   //然后设计主类，即数据库迁移类
   
 public class DbMigrator
-{
-  private readonly ILogger _logger;   //声明私有化ILogger字段，独立注入的一部分
-  
-  public DbMigrator(ILogger logger)   //这里采用的技术名称叫独立注入。指通过这种操作让这个类变得独立，任何需要直接访问其他类的情况将通过接口沟通
-  {
-    _logger = logger;
-  }
-  
-  public void Migrate(string errorMessage, string infoMessage)
-  {
-    _logger.LogErorr(errorMessage);    //调用有ILogger接口的类中的LogErorr方法，包含了具体执行逻辑
-    _logger.LogInfo(infoMessage);    //同上
-  }
 }
     
   //以上为主类。与单元测试类似，我们需要在主函数中主类构造器的参数位置传入一个有ILogger接口的类的实例，如ConsoleLogger类的实例
@@ -61,14 +48,29 @@ public class DbMigrator
   
 public class FileLogger : ILogger
 {
+  pravite readonly string _path;
+  
+  public FileLogger(string path)    //从外界获取输出文件路径
+  {
+    _path = path;
+  }
+  
   public void LogErorr(string message)
   {
-    ...//在文件系统中输出错误日志的的逻辑
+    Log(message);  //为了减少重复代码，将重复的代码移到Log方法中
   }
   
   public void LogInfo(string message)
   {
-    ...//在文件系统中输出日志信息的逻辑
+    Log(message);
+  }
+  
+  public void Log(string message)
+  {
+    using(var streamWriter = new StreamWriter(_path, true)) //在文件系统中输出日志的的逻辑
+    {
+      streamWriter.WriteLine(message);
+    }
   }
 }
   
@@ -76,22 +78,15 @@ public class FileLogger : ILogger
   
   static void Main(string[] args)
   {
-    var dbMigrator = new DbMigrator(new FileLogger());  //由于FileLogger和ConsoleLogger一样，都有ILogger接口，所以都可以作为ILogger参数传入
+    var dbMigrator = new DbMigrator(new FileLogger("C:\\log.txt"));  //由于FileLogger和ConsoleLogger一样，都有ILogger接口，所以都可以作为ILogger参数传入
     dbMigrator.Migrate("Erorr occuried.", "This is a log.");   //此例中这里的代码也不用改
   }//输出结果为在文件系统中输出了Log
   
+  //以上我们可以看到这段程序的可扩展性，即可以随意更改、增加新的输出方法而不用更改程序源代码。在编程术语中，这个过程被称作“开放-关闭原则”，
+  //即Open-close principal(OCP)，意思为一个类类不应该被更改，但是可以被扩展。
   
+//Q: 在那些情况下需要用到接口优化程序？
+//A: 并不是所有情况下都用接口来增强松耦合设计。有时候重新写一个类会更麻烦。一般来说，当一个类包含了某种算法，未来这种算法可能会更改、替换，那么
+  //这是就应该使用接口来调用这个类，未来也方便替换。
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+//暂时想到这么多，最后更新2017/12/4
