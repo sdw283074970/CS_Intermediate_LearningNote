@@ -1,6 +1,6 @@
 //Q: 什么是多态性？
-//A: 多态性(Polymorphism)在之前专门开了一章详解，再次总结一下。当一个方法被执行时，能够基于运行时的实际情况选择在不同对象中的同名方法执行并产生不同的输出，
-  //我们就称种现象为多态性。如之前的例子：
+//A: 多态性(Polymorphism)在之前专门开了一章详解，再次总结一下。当针对不同的对象执行同一个(同名)操作时，能使用这些对象对这一操作的自己的解释，从而产生
+  //不同的输出。如之前的复写例子：
   
 static void Main(string[] args)
 {
@@ -13,7 +13,7 @@ static void Main(string[] args)
 
   foreach (var shape in list)
   {
-    Draw();   //通过迭代列表中的对象调用他们同名方法Draw()，虽然同名，但是却是两个不同的方法，一个在circle中一个在rectangle中，即体现了多态性
+    Draw();   //通过迭代列表中的对象调用他们同名方法Draw()，虽然同名，但是却是两个不同的方法，同样的迭代不同的输出，即体现了多态性
   }
 }
 
@@ -70,7 +70,7 @@ public class DbMigrator
     logger.Add(new FileLogger());
     
     var dbMigrator = new DbMigrator(logger); 
-    dbMigrator.Migrate("Error!", "Infomation.");   //Migrate()方法将迭代列表中所有对象并执行其中的方法，更改对象不用更改主程序代码，体现了多态性
+    dbMigrator.Migrate("Error!", "Infomation.");   //Migrate()方法将迭代列表中所有对象并执行其中的方法，同样的迭代不同的输出，体现了多态性
   }
 
 //Q: 为什么要用IList<ILogger>？直接使用List<ILogger>并实例化不行吗？
@@ -79,5 +79,3 @@ public class DbMigrator
   //LoggerList<T>等，当然也包括List<T>。
 
 //暂时先到这么多，最后更新2017/12/5
-
-
