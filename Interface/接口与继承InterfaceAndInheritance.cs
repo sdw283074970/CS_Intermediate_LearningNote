@@ -45,7 +45,7 @@ public interface ITest1
 
 //继承的核心在于代码复用，上例中ITest就拥有ITest1和ITest2中的所有代码，即ITest完整版本为：
 
-public interface ITest : ITest1, ITest2
+public interface ITest
   {
     void Speak();
     void Wtf();
