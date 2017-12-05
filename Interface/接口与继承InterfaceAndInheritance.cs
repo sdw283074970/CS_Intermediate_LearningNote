@@ -23,7 +23,7 @@ public class Gun : Weapon, IRangeWeapon, IMordenWeapon    //这也不是多重�
 
 //暂时想到这么多，最后更新2017/12/4
 
-//Q: 接口之可以有继承关系吗？
+//Q: 接口之间可以有继承关系吗？
 //A: 接口之间的继承是实打实的继承关系，不仅可以像类与类那样继承，还能多重继承。如以下代码：
 
 public interface ITest : ITest1, ITest2
