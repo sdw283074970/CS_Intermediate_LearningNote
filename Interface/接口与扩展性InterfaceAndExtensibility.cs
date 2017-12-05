@@ -33,8 +33,21 @@ public class ConsoleLogger : ILogger
   //然后设计主类，即数据库迁移类
   
 public class DbMigrator
-}
-    
+ {
+   private readonly ILogger _logger;   //声明私有化ILogger字段，独立注入的一部分
+   
+   public DbMigrator(ILogger logger)   //这里采用的技术名称叫独立注入。指通过这种操作让这个类变得独立，任何需要直接访问其他类的情况将通过接口沟通
+   {
+     _logger = logger;
+   }
+   
+   public void Migrate(string errorMessage, string infoMessage)
+   {
+     _logger.LogErorr(errorMessage);    //调用有ILogger接口的类中的LogErorr方法，包含了具体执行逻辑
+     _logger.LogInfo(infoMessage);    //同上
+   }
+ }
+
   //以上为主类。与单元测试类似，我们需要在主函数中主类构造器的参数位置传入一个有ILogger接口的类的实例，如ConsoleLogger类的实例
   
   static void Main(string[] args)
