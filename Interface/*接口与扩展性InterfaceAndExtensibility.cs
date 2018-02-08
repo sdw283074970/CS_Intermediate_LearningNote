@@ -15,7 +15,7 @@ public Interface ILogger
   void LogInfo(string message);   //事先规定包含这个接口的类必须有LogInfo方法
 }
 
-  //其次设计一个包含ILogger接口、通过控制台打log的类，注意要想包含一种接口，必须满足接口中声明的所有方法
+  //其次设计一个包含ILogger接口、通过控制台打log的服务类，注意要想包含一种接口，必须满足接口中声明的所有方法
   
 public class ConsoleLogger : ILogger
 {
@@ -30,13 +30,13 @@ public class ConsoleLogger : ILogger
   }
 }
   
-  //然后设计主类，即数据库迁移类
+  //然后设计客户类，即数据库迁移类
   
 public class DbMigrator
  {
-   private readonly ILogger _logger;   //声明私有化ILogger字段，独立注入的一部分
+   private readonly ILogger _logger;   //声明私有化ILogger字段，依赖注入的一部分
    
-   public DbMigrator(ILogger logger)   //这里采用的技术名称叫独立注入。指通过这种操作让这个类变得独立，任何需要直接访问其他类的情况将通过接口沟通
+   public DbMigrator(ILogger logger)   //这里采用的技术名称叫依赖注入。指通让客户类不依赖服务类，任何需要直接访问服务类的情况将通过接口沟通
    {
      _logger = logger;
    }
