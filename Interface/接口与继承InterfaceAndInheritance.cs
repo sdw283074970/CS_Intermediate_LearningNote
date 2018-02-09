@@ -58,13 +58,15 @@
 
 //以上更新2017/12/5
 
+//以下未证实
+//---------------
 //Q: 如果一个类在实施多个接口的同时又要继承于另一个类，应该怎么写？
 //A: 一起将父类和接口写在冒号的右边即可。如以下代码：
 
     public class Rifle : Weapon, IRangeWeapon, IMordenWeapon
     {
     }
-  
+
   //需要注意的是，当父类和接口混合写时，填充方法需要明确来源。如以下代码：
 
     public class Rifle : Weapon, IRangeWeapon, IMordenWeapon
@@ -72,10 +74,11 @@
         void IRangeWeapon.Shot()
         {
         }
-        
+
         void IMordenWeapon.Aim()
         {
         }
     }
-  
+//----------------
+
 //暂时补充这么多，最后更新2018/02/09
